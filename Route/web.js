@@ -11,7 +11,7 @@ router.get('/',(req,res)=>{
     res.render("index");
 });
 router.post('/AddUser',async (req,res)=>{
-    console.log("Herher");
+    
     const key=gamesRef.push().key;
     const user_id = req.body.players;
     console.log(req.body);
