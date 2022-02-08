@@ -4,7 +4,7 @@ const database = admin.database();
 const gamesRef = database.ref('/Games');
 const check=require('../Checker');
 router.get('/',(req,res)=>{
-    res.render("game");
+    res.render("index");
 });
 router.post('/AddUser',async (req,res)=>{
     const key=gamesRef.push().key;
