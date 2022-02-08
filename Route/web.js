@@ -1,8 +1,13 @@
 const router=require('express').Router();
 const admin = require("../config");
+var functions = require('firebase-functions');
 const database = admin.database();
 const gamesRef = database.ref('/Games');
 const check=require('../Checker');
+const app=require('express')();
+app.use('/fns', router);
+
+exports.fns = functions.https.onRequest(app);
 router.get('/',(req,res)=>{
     res.render("index");
 });
@@ -54,4 +59,5 @@ router.put('/Update/:key',async(req,res)=>{
     
     
 });
+exports.fns = functions.https.onRequest(app);
 module.exports=router;
