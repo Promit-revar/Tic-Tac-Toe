@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+  <style>
+    table {
+    max-width: 420px;
+    max-height: 420px;
+    width: 85vw;  /* 85% of the viewport (body) width */
+    height: 85vw;
+    border-spacing: 4px 2px;  /* Space between cells */
+  }
+  td {
+    padding: 0;
+    width: 33%;  /* Every cell should be 1/3 of table height (and width) */
+    height: 33%;
+  }
+  .cell {
+    font-size: 3.4em;
+    font-size: 16vmin;  /* Responsive font size! Awesome! */
+    height: 100%;  /* Fill the container (td) */
+    width: 100%;
+  }
+  .wincell {
+    background-color: #c88;  /* Red background to highlight the "winning" line */
+  }
+  .player-two {
+    color: #933;
+  }
+  
+  </style>
+  <script>
+    var t=0;
+    var key=null;
+    function disable(){
+      for(var i=0;i<9;i++){
+      document.getElementById(i).disabled=true;
+      document.getElementById(i).innerHTML="";
+    }
+    }
+    function over(){
+      for(var i=0;i<9;i++)
+      document.getElementById(i).disabled=true;
+    }
+    function addUser(){
+    disable();
+    //console.log("HII");
+    user = { 
+      "players":[{
+               	  "first_name":document.getElementById('player1').value,
+                  "pid":"player1",
+                  "symbol":"O"
+                },
+                {
+                  "first_name":document.getElementById('player2').value,
+                    "pid":"player2",
+                    "symbol":"X"
+                }],
+                "state":["-","-","-","-","-","-","-","-","-"]
+            }
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 
+                    'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(user)
+        }
+  
+        
+        let fetchRes = fetch("http://localhost:8000/AddUser", options);
+        fetchRes.then(res =>
+            res.json()).then(d => {
+                document.getElementById("Res").innerHTML=d["ref"];
+                key=d["ref"];
+            });
+    for(var i=0;i<9;i++){
+      document.getElementById(i).disabled=false;
+      //document.getElementById(i).innerHTML="";
+    } 
+          }
+    function turn(i){
+            change= {
+	
+	          "pid":"player1",
+            "id":i
+            }
+            
+           if(t&1){
+            change["pid"]="player2";
+            change["sym"]="X";
+             document.getElementById(i).innerHTML='<b>X<b>';
+           }
+           else{
+            change["pid"]="player1";
+            change["sym"]="O";
+            document.getElementById(i).innerHTML='<b>O<b>';
+           }
+           let options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 
+                    'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(change)
+        }
+    console.log(key);
+       
+        let fetchRes = fetch(`http://localhost:8000/Update/${key}`, options);
+        fetchRes.then(res =>
+            res.json()).then(d => {
+              var x=null;
+                if(d["status"]=="won")
+                {
+                  if(t&1){
+                    x="Player 1 won!!";
+                  }
+                  else{
+                    x="Player 2 won !!";
+                  }
+                  over();
+                }
+                else if(d["status"]=="Draw"){
+                    x="Match ends in a tie!!";
+                }
+                else{
+                  if(t&1){
+                    x="Player 2's turn";
+                  }
+                  else{
+                    x="Player 1's turn";
+                  }
+                }
+
+                document.getElementById("Status").innerHTML=x;
+                
+            });
+           t++;
+           document.getElementById(i).disabled = true;
+    }
+    //function 
+  </script>
+  <title>Tic Tac Toe</title>
+
+</head>
+<body onload="disable()">
+  <label>Player 1</label>
+ <input id="player1" type="text" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>O</b><br><br>
+ <label>player 2</label>
+ <input id="player2" type="text" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>X</b><br>
+ <button onclick="addUser()">Play</button>
+ <br>
+ <br>
+ <div id="Res">
+
+ </div>
+<!-- <div id="intro-screen" class="center">
+    <h2>Choose your symbol:</h2>
+    <button type="button" id="choose-x" class="choose">X</button>
+    <button type="button" id="choose-o" class="choose">O</button>
+  </div> -->
+  
+
+    
+  <div id="game-screen" class="center hidden">
+    <!-- Every cell has an id "cell" followed by cell row and cell column -->
+    <table class="center">
+      <tr>
+        <td>
+          <button type="button" class="cell" id="0" onclick="turn(0)"></button>
+        </td>
+        <td>
+          <button type="button" class="cell" id="1" onclick="turn(1)"></button>
+        </td>
+        <td>
+          <button type="button" class="cell" id="2" onclick="turn(2)"></button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="cell" id="3" onclick="turn(3)"></button>
+        </td>
+        <td>
+          <button type="button" class="cell" id="4" onclick="turn(4)"></button>
+        </td>
+        <td>
+          <button type="button" class="cell" id="5" onclick="turn(5)"></button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="cell" id="6" onclick="turn(6)"></button>
+        </td>
+        <td>
+          <button type="button" class="cell" id="7" onclick="turn(7)"></button>
+        </td>
+        <td>
+          <button type="button" class="cell" id="8" onclick="turn(8)"></button>
+        </td>
+      </tr>
+    </table>
+    <div id="Status">
+
+    </div>
+    <br>
+    <button type="button" id="restart" onclick="addUser()">Restart</button>
+  <div>
+    
+</body>
+</html>
