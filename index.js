@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(webroutes);
 app.set("view engine","ejs");
 const port=process.env.PORT || 8000;
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public'));
 app.use(express.static(__dirname+'public'));
 console.log(__dirname);
 
