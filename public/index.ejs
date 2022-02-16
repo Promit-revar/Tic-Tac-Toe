@@ -39,14 +39,34 @@
       for(var i=0;i<9;i++){
       document.getElementById(i).disabled=true;
       document.getElementById(i).innerHTML="";
+
     }
+    
     }
     function over(){
+      
       for(var i=0;i<9;i++)
       document.getElementById(i).disabled=true;
+      document.getElementById("restart").disabled=false;
+      document.getElementById("Exit").disabled=false;
+    }
+    function exit(){
+      //disable();
+      document.getElementById("play").disabled=false;
+      document.getElementById("player1").innerHTML="";
+      document.getElementById("player2").innerHTML="";
+      document.getElementById("restart").disabled=true
+      document.getElementById("Exit").disabled=true;
     }
     function addUser(){
+      if(t!=0){
+        
+        t=0;
+      }
+    
     disable();
+    document.getElementById("restart").disabled=true; 
+    document.getElementById("play").disabled=true;
     //console.log("HII");
     user = { 
       "players":[{
@@ -151,7 +171,7 @@
  <input id="player1" type="text" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>O</b><br><br>
  <label>player 2</label>
  <input id="player2" type="text" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>X</b><br>
- <button onclick="addUser()">Play</button>
+ <button onclick="addUser()" id="play">Play</button>
  <br>
  <br>
  <div id="Res">
@@ -206,7 +226,8 @@
 
     </div>
     <br>
-    <button type="button" id="restart" onclick="addUser()">Restart</button>
+    <button type="button" id="restart" onclick="addUser(true)">Restart</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" id="Exit" onclick="exit()">Exit</button>
   <div>
     
 </body>
